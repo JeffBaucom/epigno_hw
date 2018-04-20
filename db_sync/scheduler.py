@@ -69,17 +69,12 @@ def diff_remote(remote_records):
 
             local_str = (" ".join(local_list)).encode('utf-8')
             remote_str = (" ".join(remote_list)).encode('utf-8')
-            print("local", local_str)
-            print("remote", remote_str)
 
             remote_hash = hashlib.md5(remote_str).hexdigest()
             local_hash = hashlib.md5(local_str).hexdigest()
-            print(remote_hash)
-            print(local_hash)
             # compare hashes and call update function
             if local_hash != remote_hash:
                 update_local(record, filtered)
-                #print('needs to update')
 
     db.session.commit()
 

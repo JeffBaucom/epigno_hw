@@ -9,7 +9,7 @@ def record(state):
     from db_sync import scheduler
     scheduler.scheduler.start()
     #if __name__ == '__main__':
-    scheduler.worker_start()
+    #scheduler.worker_start()
 
 @db_sync_blueprint.route('/', defaults={'page': 'index'})
 @db_sync_blueprint.route('/<page>')
