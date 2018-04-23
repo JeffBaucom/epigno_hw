@@ -31,10 +31,6 @@ scheduler.add_job(
 
 atexit.register(lambda: scheduler.shutdown())
 
-def worker_start():
-    with Connection(redis):
-        worker = Worker(list(map(Queue, listen)))
-        multiprocessing.Process(target=worker.work()).start()
 
 def db_sync():
     remote_records = operation_remote.OperationRemote.query.all()

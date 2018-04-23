@@ -1,3 +1,13 @@
 *.pyc
 *.db
 *.rdb
+
+\.idea/epigno_hw\.iml
+
+\.idea/misc\.xml
+
+\.idea/modules\.xml
+
+\.idea/vcs\.xml
+
+\.idea/workspace\.xml

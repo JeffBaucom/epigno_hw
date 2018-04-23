@@ -1,20 +1,18 @@
-"""
-from server import app
 import enum
-from sqlalchemy.dialects.postgresql import ENUM
-from flask_sqlalchemy import SQLAlchemy
+from . import db
 
-db = SQLAlchemy(app)
 
 class Operation(db.Model):
-    __abstract__  = 1
+    __abstract__ = 1
     __tablename__ = 'operations'
 
     operation_id = db.Column(db.String(), primary_key=True)
     created_on = db.Column(db.DateTime())
     updated_on = db.Column(db.DateTime())
     patient_age = db.Column(db.Integer)
-    patient_gender_code = db.Column(db.Enum("M", "F", name="gender_types", create_type=False, checkfirst=True))
+    patient_gender_code = db.Column(
+        db.Enum("M", "F", name="gender_types", create_type=False,
+                checkfirst=True))
     operation_type_code = db.Column(db.String())
     operation_entry_time = db.Column(db.DateTime())
     operation_leave_time = db.Column(db.DateTime())
@@ -27,7 +25,12 @@ class Operation(db.Model):
     surgeon_scrub_nurse_code = db.Column(db.String())
     surgeon_circulating_nurse_code = db.Column(db.String())
 
-    def __init__(self, operation_id, created_on, updated_on, patient_age, patient_gender_code, operation_type_code, operation_entry_time, operation_leave_time, operation_start_time, operation_end_time, operation_room_code, surgeon_code, surgeon_assistant_code, surgeon_anesthesiologist_code, surgeon_scrub_nurse_code, surgeon_circulating_nurse_code):
+    def __init__(self, operation_id, created_on, updated_on, patient_age,
+                 patient_gender_code, operation_type_code, operation_entry_time,
+                 operation_leave_time, operation_start_time, operation_end_time,
+                 operation_room_code, surgeon_code, surgeon_assistant_code,
+                 surgeon_anesthesiologist_code, surgeon_scrub_nurse_code,
+                 surgeon_circulating_nurse_code):
         self.operation_id = operation_id
         self.created_on = created_on
         self.updated_on = updated_on
@@ -48,12 +51,7 @@ class Operation(db.Model):
     def __repr__(self):
         return '<id {}>'.format(self.operation_id)
 
-class OperationLocal(Operation):
-    __tablename__ = 'operations_local'
-    __bind_key__ = None
-    patient_gender_code = db.Column(ENUM("M", "F", name="gender_types", create_type=False))
 
 class OperationRemote(Operation):
     __tablename__ = 'operations_hospital'
     __bind_key__ = 'hospital'
-"""
