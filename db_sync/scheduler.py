@@ -39,18 +39,21 @@ def worker_start():
 def db_sync():
     remote_records = operation_remote.OperationRemote.query.all()
     local_records = operation_local.OperationLocal.query.all()
-    diff_remote(remote_records)
+    diff_remote(remote_records, local_records)
     print(time.strftime("%A, %d. %B %Y %I:%M:%S %p"))
 
 
-def diff_remote(remote_records):
+def diff_remote(remote_records, local_records):
+    #search for changed remote records
     for record in remote_records:
-        filtered = operation_local.OperationLocal.query.filter_by(operation_id=record.operation_id).first()
+        #filtered = operation_local.OperationLocal.query.filter_by(operation_id=record.operation_id).first()
+        filtered = next((x for x in local_records if x.operation_id == record.operation_id), None)
         if not filtered: # Record needs to be cloned
             new_operation = clone_remote(record)
             db.session.add(new_operation)
         else: # Record has already been cloned
             # Compile object attributes (excluding those that don't change, like operation_id)
+            local_records.remove(filtered)
             local_list = [str(filtered.updated_on),
                 str(filtered.operation_entry_time),
                 str(filtered.operation_leave_time),
@@ -76,6 +79,11 @@ def diff_remote(remote_records):
             if local_hash != remote_hash:
                 update_local(record, filtered)
 
+    #searched for deleted remote records
+    for record in local_records:
+        filtered = operation_remote.OperationRemote.query.filter_by(operation_id=record.operation_id).first()
+        if not filtered:
+            db.session.delete(record)
     db.session.commit()
 
 def clone_remote(operation_remote):
